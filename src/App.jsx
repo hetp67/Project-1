@@ -10,12 +10,24 @@ import Home from './pages/Home.jsx'
 import About from './pages/About.jsx'
 import Contact from './pages/Contact.jsx'
 import Dashboard from './pages/Dashboard.jsx' 
+import Apidemo from './pages/ApiDemo.jsx'
 
 function App() {
   // const [currentPage, setCurrentPage] = useState('register');
   const [page, setPage] = useState("landing");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
+
+  // session restore on refresh
+
+  useEffect(
+    () => {
+      const user=JSON.parse(localStorage.getItem("user"));
+      if(user && user.isLoggedIn){
+        setIsLoggedIn(true);
+      }
+    },[]
+  );
   
 
   return (
@@ -23,24 +35,46 @@ function App() {
       {page === "landing" && <Landing onNavigate={setPage} />}
       {page === "home" && <Home />}
       {page === "about" && <About />}
+      {page === "dashboard" && <Dashboard/>}
       {page === "contact" && <Contact />}
+      {page === "api" && <Apidemo/>}
       {page === "dashboard" && isLoggedIn && <Dashboard onLogout={() => { 
         setIsLoggedIn(false); 
         setPage("landing")
       }} />}
+  
       {page === "register" && <P1 onRegisterSuccesful={() => {
         setPage("login");
       }} />}
+  
       {page === "login" && <Login onLogin={() => {
         setIsLoggedIn(true);
         setPage("dashboard");
       }} />}
+
+      {/*protected route for dashboard page*/}
+      {page === "dashboard" &&  (isLoggedIn ? (<Dashboard onLogout={() => { 
+        setIsLoggedIn(false); 
+        localStorage.removeItem("user");
+        setPage("landing");
+      }}/> 
+
+      ):(
+        <Login onLogin={() => {
+          setIsLoggedIn(true);
+          setPage("dashboard");
+        }} />
+      )
+      )}
+
+      {/*Dev button*/}
+      <button onClick={()=> setPage("api")}>ApiDemo</button> 
     
     </div>
   );
 }
+export default App;
 
-export default App
 
 
 {/*currentPage === "register" && <P1 onRegisterSuccesful={() => 

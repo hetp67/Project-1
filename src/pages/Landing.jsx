@@ -3,7 +3,7 @@ import { useState } from "react";
 
 function landing({onNavigate}) {
     return(
-        <div style={{height: "100vh", width: "100vw", margin: "0", padding: "50px", backgroundColor: "#109ac895", textAlign: "center"}}>
+        <div style={{height: "77vh", width: "90vw", margin: "0", padding: "50px", backgroundColor: "#109ac895", textAlign: "center"}}>
             <h1>Welcome to our Application</h1>
             <nav style={{display: "flex", justifyContent: "center", alignItems: "center", gap:"15px", marginBottom: "20px", flexDirection: "row"}}>
             <button style={{ backgroundColor:"#ce2222"}}onClick={() => onNavigate('register')}>Register</button>
@@ -18,4 +18,4 @@ function landing({onNavigate}) {
         </div>
     );
 }  
-export default landing; 
+export default landing;
