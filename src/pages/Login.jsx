@@ -4,24 +4,30 @@ function Login({onLogin}) {
   const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError]= useState("");
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-       /*if (email && password) {
-        onLogin();
-       } else {
-          setError("Invalid email or password");
-       }*/
-       const storedUserData = JSON.parse(localStorage.getItem("userData"));
-       if (!storedUserData) {
-        setError("No registered user found. Please register first.");
-        return;
-       }
-        if (email === storedUserData.email && password === storedUserData.password) {
-            onLogin();
-        } else {
-            setError("Invalid email or password");
+        setError("");
+
+        try {
+          const res = await fetch("http://localhost:5000/api/auth/login", {
+            method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                onLogin();
+            }
+            else {
+                setError(data.message || "Login failed");
+            }
+        } catch (err) {
+            setError("An error occurred during login / server might be down");
         }
-    }
+    };
+
 
     return (
         <div style ={{ maxWidth: "300px", margin: "0 auto", padding: "20px", border: "1px solid #ccc", borderRadius: "5px" }}>
@@ -54,5 +60,26 @@ function Login({onLogin}) {
 export default Login;
    
 
+
+
+    {/*const handleSubmit = (e) => {
+        e.preventDefault();
+       /*if (email && password) {
+        onLogin();
+       } else {
+          setError("Invalid email or password");
+       
+       const storedUserData = JSON.parse(localStorage.getItem("userData"));
+       if (!storedUserData) {
+        setError("No registered user found. Please register first.");
+        return;
+       }
+        if (email === storedUserData.email && password === storedUserData.password) {
+            onLogin();
+        } else {
+            setError("Invalid email or password");
+        }
+    };
+    */}
 
     

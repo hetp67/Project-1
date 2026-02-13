@@ -3,34 +3,63 @@ import { useState } from "react";
 function Registration({onRegisterSuccesful}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
+  const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !phone || !age || !gender || !address) {
       setMessage("All fields are required");
       return;
     }
-    // Storing data locally
-    const userData = { name, email, password };
-    localStorage.setItem("userData", JSON.stringify(userData));
-    
 
-    // for now just showing success
-    setMessage("Registration successful ✅");
+    try {
+      setLoading(true);
+      setMessage("");
+      const res = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password, phone, age, gender, address }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setMessage(data.message || "Registration failed");
+        setLoading(false);
+        return;
+      }
 
+      setMessage( "Registration Successful!");
+  
     // clear form
     setName("");
     setEmail("");
     setPassword("");
-  
+    setGender("");
+    setPhone("");
+    setAddress("");
+    setAge("");
+    setLoading(false);
+    setTimeout(() => {
+     onRegisterSuccesful();  
+     },2000);
+  } catch (err) {
+    console.error(err);
+    setMessage("Server error");
+    setLoading(false);
+  }
+  };
 
-  setTimeout(() => {
-  onRegisterSuccesful();  
-  },2000);
-};
+
+
+
   return (
     <div style={{ width: "300px", margin: "50px auto" }}>
       <h2>Register</h2>
@@ -64,14 +93,59 @@ function Registration({onRegisterSuccesful}) {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+        <div>
+          <input
+            type="text"
+            placeholder="Enter phone number"  
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            placeholder="Enter gender"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+          />
 
-        <button type="submit">Register</button>
+        </div>
+        <div>
+            <input type="text" 
+            placeholder="Enter age"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+
+          />
+        </div>
+        <div>
+          <input
+            type="text" 
+            placeholder="Enter address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />  
+        </div>   
+
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Registering..." : "Register"}</button>
       </form>
     </div>
   );
 }
 
 export default Registration;
+
+
+
+
+{/* // Storing data locally
+    const userData = { name, email, password };
+    localStorage.setItem("userData", JSON.stringify(userData));
+      // for now just showing success
+    setMessage("Registration successful ✅"); 
+    */}
 
 
 {/*import { useState } from "react";
@@ -86,7 +160,7 @@ function P1({onRegistersuccessful} ) {
     const [address,setAddress]=useState("");
     
       const handleSubmit = (e) => {
-        e.preventDefault();
+        e.preven9tDefault();
         if (!name || !email || !password) {
             setMessage("All fields are required");
           //  onRegistersuccessful();

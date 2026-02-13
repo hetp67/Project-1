@@ -35,13 +35,8 @@ function App() {
       {page === "landing" && <Landing onNavigate={setPage} />}
       {page === "home" && <Home />}
       {page === "about" && <About />}
-      {page === "dashboard" && <Dashboard/>}
       {page === "contact" && <Contact />}
       {page === "api" && <Apidemo/>}
-      {page === "dashboard" && isLoggedIn && <Dashboard onLogout={() => { 
-        setIsLoggedIn(false); 
-        setPage("landing")
-      }} />}
   
       {page === "register" && <P1 onRegisterSuccesful={() => {
         setPage("login");
@@ -52,14 +47,13 @@ function App() {
         setPage("dashboard");
       }} />}
 
-      {/*protected route for dashboard page*/}
-      {page === "dashboard" &&  (isLoggedIn ? (<Dashboard onLogout={() => { 
-        setIsLoggedIn(false); 
-        localStorage.removeItem("user");
-        setPage("landing");
-      }}/> 
-
-      ):(
+      {page === "dashboard" && (isLoggedIn ? (
+        <Dashboard onLogout={() => { 
+          setIsLoggedIn(false); 
+          localStorage.removeItem("user");
+          setPage("landing");
+        }} />
+      ) : (
         <Login onLogin={() => {
           setIsLoggedIn(true);
           setPage("dashboard");
@@ -68,7 +62,7 @@ function App() {
       )}
 
       {/*Dev button*/}
-      <button onClick={()=> setPage("api")}>ApiDemo</button> 
+      {/*<button onClick={()=> setPage("api")}>ApiDemo</button>*/}
     
     </div>
   );
